@@ -169,19 +169,19 @@ class RedisSync {
         // 设置Key前缀
         $success = $redis->setOption(\Redis::OPT_PREFIX, self::$prefix);
         if (!$success) {
-            throw new InvalidArgumentException('Name: ' . \Redis::OPT_PREFIX . 'Value: ' . self::$prefix);
+            throw new InvalidArgumentException('Name: ' . 'Redis::OPT_PREFIX' . 'Value: ' . self::$prefix);
         }
 
         // 开启缓存数据的序列化及反序列化
         $success = $redis->setOption(\Redis::OPT_SERIALIZER, self::$serializer);
         if (!$success) {
-            throw new InvalidArgumentException('Name: ' . \Redis::OPT_SERIALIZER . 'Value: ' . self::$serializer);
+            throw new InvalidArgumentException('Name: ' . 'Redis::OPT_SERIALIZER' . 'Value: ' . self::$serializer);
         }
 
         // 开启Scan多次扫描
-        $success = $redis->setOption(\Redis::OPT_SCAN, \Redis::SCAN_RETRY);
+        $success = $redis->setOption(\Redis::OPT_SCAN, 'Redis::SCAN_RETRY');
         if (!$success) {
-            throw new InvalidArgumentException('Name: ' . \Redis::OPT_SERIALIZER . 'Value: ' . self::$serializer);
+            throw new InvalidArgumentException('Name: ' . 'Redis::SCAN_RETRY' . 'Value: ' . self::$serializer);
         }
 
         // 验证密码
