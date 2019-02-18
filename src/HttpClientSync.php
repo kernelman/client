@@ -85,8 +85,7 @@ class HttpClientSync
     private function header() {
 
         return array(
-            'Content-Type: application/' . $this->dataType . '; charset=' . $this->charset,
-            'Content-Length: ' . strlen($this->data)
+            'Content-Type: application/' . $this->dataType . '; charset=' . $this->charset
         );
     }
 
