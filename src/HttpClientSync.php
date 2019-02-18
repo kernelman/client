@@ -103,7 +103,6 @@ class HttpClientSync
         }
 
         // 初始化cUrl
-        $content = '';
         $channel = \curl_init();
 
         // 设置超时值
@@ -116,11 +115,14 @@ class HttpClientSync
         \curl_setopt($channel, CURLOPT_POSTFIELDS, $this->data);
         // 设置请求头部
         \curl_setopt($channel, CURLOPT_HTTPHEADER, $this->header());
+        // 设置返回数据, 而不直接显示
+        \curl_setopt($channel, CURLOPT_RETURNTRANSFER, 1);
 
         // 执行cUrl
         try {
             $content = \curl_exec($channel);
             \curl_close($channel);
+            return $content;
 
         } catch (\Exception $e) {
             // 获取cUrl错误码
@@ -131,7 +133,7 @@ class HttpClientSync
             $this->log($errorMsg);
         }
 
-        return $content;
+        return false;
     }
 
     /**
@@ -143,10 +145,8 @@ class HttpClientSync
      * @throws \Exceptions\UnFormattedException
      */
     public function getRaw() {
-        $rawData = '';
-
         try {
-            $rawData = file_get_contents('php://input');
+            return file_get_contents('php://input');
 
         } catch (\Exception $e) {
 
@@ -154,7 +154,7 @@ class HttpClientSync
             $this->log($errorMsg);
         }
 
-        return $rawData;
+        return false;
     }
 
     /**
