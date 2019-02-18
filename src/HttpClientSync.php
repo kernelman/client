@@ -58,7 +58,7 @@ class HttpClientSync
      */
     public function post($url = '', $data ='', $second = 30 ) {
         $this->timeout = $second;
-        return $this->init($url, $data, 'CURLOPT_POST');
+        return $this->init($url, $data, CURLOPT_POST);
     }
 
     /**
@@ -74,7 +74,7 @@ class HttpClientSync
      */
     public function get($url = '', $data ='', $second = 30) {
         $this->timeout = $second;
-        return $this->init($url, $data, 'CURLOPT_HTTPGET');
+        return $this->init($url, $data, CURLOPT_HTTPGET);
     }
 
     /**
