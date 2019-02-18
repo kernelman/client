@@ -14,7 +14,7 @@ return (object)[
 
         'REDIS_DB'          =>  0,
         'REDIS_HOST'        =>  '127.0.0.1',
-        'REDIS_PASSWORD'    =>  'redisAuth',
+        'REDIS_PASSWORD'    =>  'mintos',
         'REDIS_PORT'        =>  6379,
         'REDIS_LIFETIME'    =>  120,
         'REDIS_PERSISTENT'  =>  true,
