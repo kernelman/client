@@ -21,13 +21,18 @@ use Message\Message;
  */
 class HttpClientSync
 {
-    private $url     = '';  // 请求地址
-    private $data    = '';  // 提交数据
-    private $method  = '';  // Post/Get方法
-    private $timeout;       // 默认超时值30秒
+    private $url        = '';       // 请求地址
+    private $data       = '';       // 提交数据
+    private $method     = '';       // Post/Get方法
+    private $timeout;               // 默认超时值30秒
 
-    public $charset  = 'utf-8';
-    public $dataType = 'X-www-form-urlencoded'; // 默认用Form数据类型
+    public $charset     = 'utf-8';  // 使用utf8字符编码
+    public $type        = 'data';   // 默认用Form数据类型
+    public $dataType    = [
+        'data'  => 'multipart/form-data',
+        'url'   => 'application/X-www-form-urlencoded',
+        'json'  => 'application/json',
+    ];
 
     /**
      * @param $url
@@ -85,7 +90,7 @@ class HttpClientSync
     private function header() {
 
         return array(
-            'Content-Type: application/' . $this->dataType . '; charset=' . $this->charset
+            'Content-Type: ' . $this->dataType[$this->type] . '; charset=' . $this->charset
         );
     }
 
