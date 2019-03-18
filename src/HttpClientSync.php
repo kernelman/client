@@ -34,6 +34,8 @@ class HttpClientSync
     ];
 
     /**
+     * 初始化参数
+     *
      * @param $url
      * @param $data
      * @param $method
@@ -65,14 +67,13 @@ class HttpClientSync
      * 使用Get方法请求
      *
      * @param string $url
-     * @param string $data
      * @param int $second
      * @return mixed|string
      * @throws NotFoundException
      */
-    public function get($url = '', $data ='', $second = 30) {
+    public function get($url = '', $second = 30) {
         $this->timeout = $second;
-        return $this->init($url, $data, CURLOPT_HTTPGET);
+        return $this->init($url, '', CURLOPT_HTTPGET);
     }
 
     /**
@@ -103,12 +104,18 @@ class HttpClientSync
 
         // 设置超时值
         \curl_setopt($channel, CURLOPT_TIMEOUT, $this->timeout);
+
         // 设置Post/Get请求方法
         \curl_setopt($channel, $this->method, 1);
+
+        // 设置Post请求方法
+        if ($this->method == CURLOPT_POST) {
+            // 设置POST方法提交数据
+            \curl_setopt($channel, CURLOPT_POSTFIELDS, $this->data);
+        }
+
         // 设置请求的Url
         \curl_setopt($channel, CURLOPT_URL, $this->url);
-        // 设置提交数据
-        \curl_setopt($channel, CURLOPT_POSTFIELDS, $this->data);
         // 设置请求头部
         \curl_setopt($channel, CURLOPT_HTTPHEADER, $this->header());
         // 设置返回数据, 而不直接显示
