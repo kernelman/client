@@ -25,7 +25,7 @@ class Event
     public static function onError() {
     }
 
-    public static function onMessage($serv, $frame) {
+    public static function onMessage($service, $frame) {
     }
 
     public static function onClose($service) {

@@ -13,7 +13,7 @@ namespace Tests;
 class TestCase extends \PHPUnit\Framework\TestCase
 {
 
-    public function __construct($name = null, array $data = [], string $dataName = '') {
+    public function __construct($name = null, array $data = [], string $dataName = null) {
         include_once dirname(__DIR__) . '/index.php';
         parent::__construct($name, $data, $dataName);
     }

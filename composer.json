@@ -17,11 +17,10 @@
     "kernelman/message" : ">=1.0.0",
     "kernelman/files" : ">=1.0.0",
     "kernelman/services" : ">=1.0.0",
-    "kernelman/logs" : ">=1.0.0",
     "swoft/swoole-ide-helper": "dev-master"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": ">=6.0"
   },
   "autoload": {
     "psr-4": {

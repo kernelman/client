@@ -10,7 +10,6 @@
 namespace Client;
 
 use Exceptions\NotFoundException;
-use Logs\Services\Logs;
 use Message\Message;
 
 /**
@@ -40,8 +39,6 @@ class HttpClientSync
      * @param $method
      * @return mixed|string
      * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
      */
     private function init($url, $data, $method) {
         $this->url    = $url;
@@ -58,8 +55,6 @@ class HttpClientSync
      * @param int $second
      * @return mixed|string
      * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
      */
     public function post($url = '', $data ='', $second = 30 ) {
         $this->timeout = $second;
@@ -74,8 +69,6 @@ class HttpClientSync
      * @param int $second
      * @return mixed|string
      * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
      */
     public function get($url = '', $data ='', $second = 30) {
         $this->timeout = $second;
@@ -99,8 +92,6 @@ class HttpClientSync
      *
      * @return mixed|string
      * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
      */
     private function call() {
         if (!extension_loaded('curl')) {
@@ -134,8 +125,7 @@ class HttpClientSync
             $errno = \curl_errno($channel);
             \curl_close($channel);
             $errorMsg = $this->method . Message::NG . 'error code: ' . $errno . $e->getMessage();
-            // 写错误日志
-            $this->log($errorMsg);
+            echo $errorMsg;
         }
 
         return false;
@@ -144,10 +134,7 @@ class HttpClientSync
     /**
      * 获取请求的原始数据流
      *
-     * @return bool|string
-     * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
+     * @return bool|false|string
      */
     public function getRaw() {
         try {
@@ -156,29 +143,10 @@ class HttpClientSync
         } catch (\Exception $e) {
 
             $errorMsg = $e->getMessage();
-            $this->log($errorMsg);
+            echo $errorMsg;
         }
 
         return false;
-    }
-
-    /**
-     * 写日志
-     *
-     * @param $msg
-     * @param null $info
-     * @throws NotFoundException
-     * @throws \Exceptions\InvalidArgumentException
-     * @throws \Exceptions\UnFormattedException
-     */
-    private function log($msg, $info = null) {
-        $log            = new \stdClass();
-        $log->schema    = 'Client';
-        $log->module    = 'http';
-        $log->message   = $msg;
-        $log->content   = $info;
-
-        Logs::info($log);
     }
 
     /**
