@@ -20,150 +20,154 @@ use Message\Message;
  */
 class HttpClientSync
 {
-    private $url        = '';       // 请求地址
-    private $data       = '';       // 提交数据
-    private $method     = '';       // Post/Get方法
-    private $timeout;               // 默认超时值30秒
+	private $url        = '';       // 请求地址
+	private $data       = '';       // 提交数据
+	private $method     = '';       // Post/Get方法
+	private $timeout;               // 默认超时值30秒
 
-    public $charset     = 'utf-8';  // 使用utf8字符编码
-    public $type        = 'data';   // 默认用Form数据类型
-    public $dataType    = [
-        'data'  => 'multipart/form-data',
-        'url'   => 'application/X-www-form-urlencoded',
-        'json'  => 'application/json',
-    ];
+	public $charset     = 'utf-8';  // 使用utf8字符编码
+	public $type        = 'data';   // 默认用Form数据类型
+	public $dataType    = [
+		'data'  => 'multipart/form-data',
+		'url'   => 'application/X-www-form-urlencoded',
+		'json'  => 'application/json',
+	];
 
-    /**
-     * 初始化参数
-     *
-     * @param $url
-     * @param $data
-     * @param $method
-     * @return mixed|string
-     * @throws NotFoundException
-     */
-    private function init($url, $data, $method) {
-        $this->url    = $url;
-        $this->data   = $data;
-        $this->method = $method;
-        return $this->call();
-    }
+	/**
+	 * 初始化参数
+	 *
+	 * @param $url
+	 * @param $data
+	 * @param $method
+	 * @return mixed|string
+	 * @throws NotFoundException
+	 */
+	private function init($url, $data, $method) {
+		$this->url    = $url;
+		$this->data   = $data;
+		$this->method = $method;
+		return $this->call();
+	}
 
-    /**
-     * 使用Post方法请求
-     *
-     * @param string $url
-     * @param string $data
-     * @param int $second
-     * @return mixed|string
-     * @throws NotFoundException
-     */
-    public function post($url = '', $data ='', $second = 30 ) {
-        $this->timeout = $second;
-        return $this->init($url, $data, CURLOPT_POST);
-    }
+	/**
+	 * 使用Post方法请求
+	 *
+	 * @param string $url
+	 * @param string $data
+	 * @param int $second
+	 * @return mixed|string
+	 * @throws NotFoundException
+	 */
+	public function post($url = '', $data ='', $second = 30 ) {
+		$this->timeout = $second;
+		return $this->init($url, $data, CURLOPT_POST);
+	}
 
-    /**
-     * 使用Get方法请求
-     *
-     * @param string $url
-     * @param int $second
-     * @return mixed|string
-     * @throws NotFoundException
-     */
-    public function get($url = '', $second = 30) {
-        $this->timeout = $second;
-        return $this->init($url, '', CURLOPT_HTTPGET);
-    }
+	/**
+	 * 使用Get方法请求
+	 *
+	 * @param string $url
+	 * @param int $second
+	 * @return mixed|string
+	 * @throws NotFoundException
+	 */
+	public function get($url = '', $second = 30) {
+		$this->timeout = $second;
+		return $this->init($url, '', CURLOPT_HTTPGET);
+	}
 
-    /**
-     * 组合头部
-     *
-     * @return array
-     */
-    private function header() {
+	/**
+	 * 组合头部
+	 *
+	 * @return array
+	 */
+	private function header() {
 
-        return array(
-            'Content-Type: ' . $this->dataType[$this->type] . '; charset=' . $this->charset
-        );
-    }
+		return array(
+			'Content-Type: ' . $this->dataType[$this->type] . '; charset=' . $this->charset
+		);
+	}
 
-    /**
-     * 调用cUrl库发起Post/Get请求
-     *
-     * @return mixed|string
-     * @throws NotFoundException
-     */
-    private function call() {
-        if (!extension_loaded('curl')) {
-            throw new NotFoundException('cUrl扩展库.');
-        }
+	/**
+	 * 调用cUrl库发起Post/Get请求
+	 *
+	 * @return mixed|string
+	 * @throws NotFoundException
+	 */
+	private function call() {
+		if (!extension_loaded('curl')) {
+			throw new NotFoundException('cUrl扩展库.');
+		}
 
-        // 初始化cUrl
-        $channel = \curl_init();
+		if (!function_exists('curl_exec')) {
+			throw new NotFoundException('curl_exec');
+		}
 
-        // 设置超时值
-        \curl_setopt($channel, CURLOPT_TIMEOUT, $this->timeout);
+		// 初始化cUrl
+		$channel = \curl_init();
 
-        // 设置Post/Get请求方法
-        \curl_setopt($channel, $this->method, 1);
+		// 设置超时值
+		\curl_setopt($channel, CURLOPT_TIMEOUT, $this->timeout);
 
-        // 设置Post请求方法
-        if ($this->method == CURLOPT_POST) {
-            // 设置POST方法提交数据
-            \curl_setopt($channel, CURLOPT_POSTFIELDS, $this->data);
-        }
+		// 设置Post/Get请求方法
+		\curl_setopt($channel, $this->method, 1);
 
-        // 设置请求的Url
-        \curl_setopt($channel, CURLOPT_URL, $this->url);
-        // 设置请求头部
-        \curl_setopt($channel, CURLOPT_HTTPHEADER, $this->header());
-        // 设置返回数据, 而不直接显示
-        \curl_setopt($channel, CURLOPT_RETURNTRANSFER, 1);
+		// 设置Post请求方法
+		if ($this->method == CURLOPT_POST) {
+			// 设置POST方法提交数据
+			\curl_setopt($channel, CURLOPT_POSTFIELDS, $this->data);
+		}
 
-        // 执行cUrl
-        try {
-            $content = \curl_exec($channel);
-            \curl_close($channel);
-            return $content;
+		// 设置请求的Url
+		\curl_setopt($channel, CURLOPT_URL, $this->url);
+		// 设置请求头部
+		\curl_setopt($channel, CURLOPT_HTTPHEADER, $this->header());
+		// 设置返回数据, 而不直接显示
+		\curl_setopt($channel, CURLOPT_RETURNTRANSFER, 1);
 
-        } catch (\Exception $e) {
-            // 获取cUrl错误码
-            $errno = \curl_errno($channel);
-            \curl_close($channel);
-            $errorMsg = $this->method . Message::NG . 'error code: ' . $errno . $e->getMessage();
-            echo $errorMsg;
-        }
+		// 执行cUrl
+		try {
+			$content = \curl_exec($channel);
+			\curl_close($channel);
+			return $content;
 
-        return false;
-    }
+		} catch (\Exception $e) {
+			// 获取cUrl错误码
+			$errno = \curl_errno($channel);
+			\curl_close($channel);
+			$errorMsg = $this->method . Message::NG . 'error code: ' . $errno . $e->getMessage();
+			echo $errorMsg;
+		}
 
-    /**
-     * 获取请求的原始数据流
-     *
-     * @return bool|false|string
-     */
-    public function getRaw() {
-        try {
-            return file_get_contents('php://input');
+		return false;
+	}
 
-        } catch (\Exception $e) {
+	/**
+	 * 获取请求的原始数据流
+	 *
+	 * @return bool|false|string
+	 */
+	public function getRaw() {
+		try {
+			return file_get_contents('php://input');
 
-            $errorMsg = $e->getMessage();
-            echo $errorMsg;
-        }
+		} catch (\Exception $e) {
 
-        return false;
-    }
+			$errorMsg = $e->getMessage();
+			echo $errorMsg;
+		}
 
-    /**
-     * 析构函数
-     */
-    public function __destruct() {
-        unset($this->url);
-        unset($this->data);
-        unset($this->method);
-        unset($this->dataType);
-        unset($this->charset);
-    }
+		return false;
+	}
+
+	/**
+	 * 析构函数
+	 */
+	public function __destruct() {
+		unset($this->url);
+		unset($this->data);
+		unset($this->method);
+		unset($this->dataType);
+		unset($this->charset);
+	}
 }
