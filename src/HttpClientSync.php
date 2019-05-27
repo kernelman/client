@@ -9,6 +9,7 @@
 
 namespace Client;
 
+use Common\JsonFormat;
 use Exceptions\NotFoundException;
 use Message\Message;
 
@@ -26,7 +27,7 @@ class HttpClientSync
 	private $timeout;               // 默认超时值30秒
 
 	public $charset     = 'utf-8';  // 使用utf8字符编码
-	public $type        = 'data';   // 默认用Form数据类型
+	public $type        = 'json';   // 默认用JSON数据类型
 	public $dataType    = [
 		'data'  => 'multipart/form-data',
 		'url'   => 'application/X-www-form-urlencoded',
@@ -57,9 +58,16 @@ class HttpClientSync
 	 * @param int $second
 	 * @return mixed|string
 	 * @throws NotFoundException
+	 * @throws \Exceptions\UnFormattedException
 	 */
-	public function post($url = '', $data ='', $second = 30 ) {
+	public function post($url = '', $data = '', $second = 30 ) {
 		$this->timeout = $second;
+
+		if ($this->type == 'json') {
+			$toJson = JsonFormat::boot($data);
+			return $this->init($url, $toJson, CURLOPT_POST);
+		}
+
 		return $this->init($url, $data, CURLOPT_POST);
 	}
 
