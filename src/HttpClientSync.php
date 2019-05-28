@@ -104,10 +104,10 @@ class HttpClientSync
 	 */
 	private function call() {
 		if (!extension_loaded('curl')) {
-			throw new NotFoundException('cUrl扩展库.');
+			throw new NotFoundException('cURL extension');
 		}
 
-		if (!function_exists('curl_exec')) {
+		if (!function_exists('curl_exec function')) {
 			throw new NotFoundException('curl_exec');
 		}
 
