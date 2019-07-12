@@ -107,8 +107,8 @@ class HttpClientSync
 			throw new NotFoundException('cURL extension');
 		}
 
-		if (!function_exists('curl_exec function')) {
-			throw new NotFoundException('curl_exec');
+		if (!function_exists('curl_exec')) {
+			throw new NotFoundException('curl_exec function');
 		}
 
 		// 初始化cUrl
