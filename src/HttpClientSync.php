@@ -28,6 +28,7 @@ class HttpClientSync
 
 	public $charset     = 'utf-8';  // 使用utf8字符编码
 	public $type        = 'json';   // 默认用JSON数据类型
+	public $header      = [];       // 头部设置
 	public $dataType    = [
 		'data'  => 'multipart/form-data',
 		'url'   => 'application/X-www-form-urlencoded',
@@ -87,13 +88,15 @@ class HttpClientSync
 	/**
 	 * 组合头部
 	 *
+	 * @param string $auth
 	 * @return array
 	 */
-	private function header() {
-
-		return array(
-			'Content-Type: ' . $this->dataType[$this->type] . '; charset=' . $this->charset
+	public function header($auth  = '') {
+		$this->header = array(
+			'Content-Type: ' . $this->dataType[$this->type] . '; charset=' . $this->charset,
+			'Authorization: ' . $auth
 		);
+		return $this->header;
 	}
 
 	/**
@@ -129,7 +132,7 @@ class HttpClientSync
 		// 设置请求的Url
 		\curl_setopt($channel, CURLOPT_URL, $this->url);
 		// 设置请求头部
-		\curl_setopt($channel, CURLOPT_HTTPHEADER, $this->header());
+		\curl_setopt($channel, CURLOPT_HTTPHEADER, !empty($this->header) ?? $this->header());
 		// 设置返回数据, 而不直接显示
 		\curl_setopt($channel, CURLOPT_RETURNTRANSFER, 1);
 
